@@ -14,6 +14,13 @@ class CreateCarRequest extends Model
     public string $contacts;
     public ?array $options = null;
 
+    public static function fromRequest(): self
+    {
+        $dto = new self();
+        $dto->load(\Yii::$app->request->bodyParams, '');
+        return $dto;
+    }
+
     public function rules(): array
     {
         return [

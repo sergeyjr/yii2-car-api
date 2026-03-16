@@ -2,18 +2,17 @@
 
 namespace app\controllers\api\v1;
 
-use Yii;
-use yii\rest\Controller;
-use yii\web\NotFoundHttpException;
-use app\services\CarService;
+use app\controllers\api\BaseApiController;
 use app\dto\request\CreateCarRequest;
 use app\dto\request\PaginationRequest;
+use app\helpers\ApiResponse;
+use app\services\CarService;
+use Yii;
+use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
-use yii\filters\auth\HttpBearerAuth;
-use yii\data\ActiveDataProvider;
 
-class CarController extends Controller
+class CarController extends BaseApiController
 {
 
     private CarService $service;
@@ -47,66 +46,55 @@ class CarController extends Controller
     public function actionCreate()
     {
 
-        $request = new CreateCarRequest();
-        $request->load(Yii::$app->request->bodyParams, '');
+        $request = CreateCarRequest::fromRequest();
 
         if (!$request->validate()) {
-            Yii::$app->response->statusCode = 422;
-            return $request->errors;
+            return ApiResponse::error($request->errors, 422);
         }
 
         $car = $this->service->createCar($request);
+
         Yii::$app->response->statusCode = 201;
 
-        return $car->toArray();
+        return $this->success($car->toArray());
 
     }
 
     public function actionView($id)
     {
+
         $car = $this->service->getCar($id);
 
         if (!$car) {
-            throw new NotFoundHttpException('Car not found');
+            return ApiResponse::error('Car not found', 404);
+            // throw new NotFoundHttpException('Car not found');
         }
 
-        return $car->toArray();
+        return $this->success($car->toArray());
+
     }
 
-    /**
-     * GET /car/list?page=1&pageSize=10&sort=price
-     */
     public function actionList()
     {
 
-        // Получаем параметры запроса
-        $params = Yii::$app->request->queryParams;
+        $paginationRequest = PaginationRequest::fromQuery();
 
-        // Создаем DTO пагинации
-        $paginationRequest = new PaginationRequest($params);
-
-        // Получаем ActiveDataProvider из сервиса
         $provider = $this->service->getCars($paginationRequest);
 
-        // Получаем модели (сущности) для вывода
-        $models = $provider->getModels();
-
-        // Преобразуем сущности в массивы
         $items = array_map(
             fn($car) => $car->toArray(),
-            $models
+            $provider->getModels()
         );
 
-        // Формируем ответ с пагинацией (как в yii\rest\ActiveController)
-        return [
-            'data' => $items,
+        return ApiResponse::success([
+            'items' => $items,
             'pagination' => [
                 'totalCount' => $provider->getTotalCount(),
                 'pageCount' => $provider->pagination->getPageCount(),
-                'currentPage' => $provider->getPagination()->getPage() + 1, // +1 т.к. ActiveDataProvider начинает с 0
+                'currentPage' => $provider->getPagination()->getPage() + 1,
                 'perPage' => $provider->getPagination()->getPageSize(),
-            ],
-        ];
+            ]
+        ]);
 
     }
 

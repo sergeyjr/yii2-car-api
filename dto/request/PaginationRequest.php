@@ -16,4 +16,9 @@ class PaginationRequest
         $this->sort = $data['sort'] ?? $this->sort;
     }
 
+    public static function fromQuery(): self
+    {
+        return new self(\Yii::$app->request->queryParams);
+    }
+
 }
