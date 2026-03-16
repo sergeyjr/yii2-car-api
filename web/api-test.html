@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Car API Tester</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, textarea, select {
+            width: 420px;
+            padding: 6px;
+        }
+
+        textarea {
+            height: 120px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        #response {
+            margin-top: 30px;
+            background: #f5f5f5;
+            padding: 15px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+
+        #tokenBox {
+            background: #eef;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<h2>Car API Test Tool</h2>
+
+<h3>Авторизация</h3>
+
+<label>Login</label>
+<input id="login" value="admin">
+
+<label>Password</label>
+<input id="password" type="password" value="123456">
+
+<button onclick="login()">Login</button>
+
+<div id="tokenBox">
+    <b>Token:</b>
+    <pre id="token"></pre>
+</div>
+
+<hr>
+
+<label>Метод API</label>
+
+<select id="apiMethod" onchange="togglePostForm()">
+    <option value="create">POST /car/create</option>
+    <option value="get">GET /car/{id}</option>
+    <option value="list">GET /car/list</option>
+</select>
+
+<label>ID объявления (для GET /car/{id})</label>
+<input id="car_id" value="1">
+
+<label>Page</label>
+<input id="page" value="1">
+
+<label>Page Size</label>
+<input id="pageSize" value="10">
+
+<label>Sort</label>
+<input id="sort" placeholder="price,-created_at">
+
+<div id="postForm">
+
+    <h3>POST данные</h3>
+
+    <label>Title</label>
+    <input id="title" value="BMW X5">
+
+    <label>Description</label>
+    <input id="description" value="Без пробега по РФ">
+
+    <label>Price</label>
+    <input id="price" value="5500000">
+
+    <label>Photo URL</label>
+    <input id="photo_url" value="https://example.com/bmw.jpg">
+
+    <label>Contacts</label>
+    <input id="contacts" value="ivan@example.com">
+
+    <label>Options (JSON)</label>
+
+    <textarea id="options">
+{
+ "brand":"BMW",
+ "model":"X5",
+ "year":2022,
+ "body":"SUV",
+ "mileage":0
+}
+</textarea>
+
+</div>
+
+<button onclick="sendRequest()">Send</button>
+
+<h3>Response</h3>
+<pre id="response"></pre>
+
+<script>
+
+    let authToken = localStorage.getItem("token") || ""
+
+    if (authToken) {
+        document.getElementById("token").textContent = authToken
+    }
+
+    function togglePostForm() {
+
+        const apiMethod = document.getElementById("apiMethod").value
+        const postForm = document.getElementById("postForm")
+
+        postForm.style.display = apiMethod === "create" ? "block" : "none"
+    }
+
+    async function login() {
+
+        const login = document.getElementById("login").value
+        const password = document.getElementById("password").value
+
+        try {
+
+            const response = await fetch("/api/v1/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    login: login,
+                    password: password
+                })
+            })
+
+            const text = await response.text()
+            let data
+
+            try {
+                data = JSON.parse(text)
+            } catch {
+                throw new Error("Server returned non JSON:\n" + text)
+            }
+
+            if (!response.ok) {
+                throw new Error(JSON.stringify(data, null, 2))
+            }
+
+            if (!data.token) {
+                throw new Error("Token not returned")
+            }
+
+            authToken = data.token
+
+            localStorage.setItem("token", authToken)
+
+            document.getElementById("token").textContent = authToken
+
+        } catch (e) {
+
+            document.getElementById("response").textContent = e
+
+        }
+
+    }
+
+    async function sendRequest() {
+
+        if (!authToken) {
+            alert("Сначала выполните login")
+            return
+        }
+
+        const apiMethod = document.getElementById("apiMethod").value
+
+        let url = ""
+        let method = "GET"
+
+        if (apiMethod === "create") {
+            url = "/api/v1/car/create"
+            method = "POST"
+        }
+
+        if (apiMethod === "get") {
+            const id = document.getElementById("car_id").value
+            url = "/api/v1/car/" + id
+        }
+
+        if (apiMethod === "list") {
+
+            const page = document.getElementById("page").value
+            const pageSize = document.getElementById("pageSize").value
+            const sort = document.getElementById("sort").value
+
+            const params = new URLSearchParams()
+
+            if (page) params.append("page", page)
+            if (pageSize) params.append("pageSize", pageSize)
+            if (sort) params.append("sort", sort)
+
+            url = "/api/v1/car/list?" + params.toString()
+        }
+
+        try {
+
+            let response
+
+            if (method === "GET") {
+
+                response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + authToken
+                    }
+                })
+
+            } else {
+
+                const body = {
+
+                    title: document.getElementById("title").value,
+                    description: document.getElementById("description").value,
+                    price: parseFloat(document.getElementById("price").value),
+                    photo_url: document.getElementById("photo_url").value,
+                    contacts: document.getElementById("contacts").value,
+                    options: JSON.parse(document.getElementById("options").value)
+
+                }
+
+                response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + authToken
+                    },
+                    body: JSON.stringify(body)
+                })
+
+            }
+
+            const text = await response.text()
+
+            let data
+
+            try {
+                data = JSON.parse(text)
+            } catch {
+                document.getElementById("response").textContent = text
+                return
+            }
+
+            if (!response.ok) {
+                document.getElementById("response").textContent =
+                    "HTTP " + response.status + "\n\n" +
+                    JSON.stringify(data, null, 2)
+                return
+            }
+
+            document.getElementById("response").textContent =
+                JSON.stringify(data, null, 2)
+
+        } catch (e) {
+
+            document.getElementById("response").textContent = e
+
+        }
+
+    }
+
+    togglePostForm()
+
+</script>
+
+</body>
+</html>
