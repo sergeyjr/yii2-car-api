@@ -29,7 +29,6 @@ class CarController extends BaseApiController
 
     public function behaviors()
     {
-
         $behaviors = parent::behaviors();
 
         $behaviors['contentNegotiator'] = [
@@ -39,12 +38,13 @@ class CarController extends BaseApiController
             ],
         ];
 
-        $behaviors['authenticator'] = [
-            'class' => HttpBearerAuth::class,
-        ];
+        if (Yii::$app->params['authEnabled']) {
+            $behaviors['authenticator'] = [
+                'class' => HttpBearerAuth::class,
+            ];
+        }
 
         return $behaviors;
-
     }
 
     public function actionCreate()
