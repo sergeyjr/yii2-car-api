@@ -61,7 +61,7 @@ class CarController extends BaseApiController
         Yii::$app->response->statusCode = 201;
 
         return $this->success(
-            $this->mapper->toResponse($car)
+            $this->mapper->mapToResponse($car)
         );
 
     }
@@ -77,7 +77,7 @@ class CarController extends BaseApiController
         }
 
         return $this->success(
-            $this->mapper->toResponse($car)
+            $this->mapper->mapToResponse($car)
         );
 
     }
@@ -89,7 +89,7 @@ class CarController extends BaseApiController
         $provider = $this->service->getCars($paginationRequest);
 
         return $this->success(
-            $this->mapper->toListResponse($provider)
+            $this->mapper->mapToListResponse($provider)
         );
     }
 

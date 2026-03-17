@@ -15,15 +15,6 @@ use app\models\activeRecord\CarAR;
 class CarDataMapper
 {
 
-    /**
-     * Преобразует ActiveRecord в Entity.
-     *
-     * Заполняет объект Car данными из модели CarAR,
-     * включая связанную сущность CarOption (если она загружена).
-     *
-     * @param CarAR $ar ActiveRecord модель автомобиля
-     * @return Car Готовая бизнес-сущность
-     */
     public function mapToEntity(CarAR $ar): Car
     {
 
@@ -55,17 +46,6 @@ class CarDataMapper
 
     }
 
-    /**
-     * Заполняет ActiveRecord данными из Entity.
-     *
-     * Используется при создании или обновлении записи в БД.
-     * Не обрабатывает связанные сущности (например, CarOption),
-     * их нужно сохранять отдельно.
-     *
-     * @param Car $car Бизнес-сущность автомобиля
-     * @param CarAR $ar ActiveRecord модель для записи
-     * @return CarAR Заполненная модель для сохранения
-     */
     public function mapToActiveRecord(Car $car, CarAR $ar): CarAR
     {
 
@@ -79,16 +59,7 @@ class CarDataMapper
 
     }
 
-    /**
-     * Преобразует Entity в DTO ответа одного объявления.
-     *
-     * Формирует объект CarResponse, который используется
-     * для отдачи данных в API.
-     *
-     * @param Car $car Бизнес-сущность автомобиля
-     * @return CarResponse DTO для ответа API
-     */
-    public function toResponse(Car $car): CarResponse
+    public function mapToResponse(Car $car): CarResponse
     {
 
         $dto = new CarResponse();
@@ -114,16 +85,7 @@ class CarDataMapper
 
     }
 
-    /**
-     * Преобразует набор моделей (через DataProvider) в DTO списка.
-     *
-     * Используется для формирования ответа списка объявлений
-     * с пагинацией.
-     *
-     * @param \yii\data\ActiveDataProvider $provider Провайдер с моделями
-     * @return CarListResponse DTO списка объявлений
-     */
-    public function toListResponse($provider): CarListResponse
+    public function mapToListResponse($provider): CarListResponse
     {
         $dto = new CarListResponse();
 
@@ -133,7 +95,7 @@ class CarDataMapper
 
         foreach ($provider->getModels() as $ar) {
             $car = $this->mapToEntity($ar);
-            $dto->items[] = $this->toResponse($car);
+            $dto->items[] = $this->mapToResponse($car);
         }
 
         return $dto;
