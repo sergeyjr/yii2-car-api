@@ -26,7 +26,6 @@ class CarController extends BaseApiController
         parent::__construct($id, $module, $config);
     }
 
-
     public function behaviors()
     {
 
