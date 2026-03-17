@@ -87,6 +87,7 @@ class CarDataMapper
 
     public function mapToListResponse($provider): CarListResponse
     {
+
         $dto = new CarListResponse();
 
         $dto->page = $provider->pagination->getPage() + 1;
@@ -99,6 +100,7 @@ class CarDataMapper
         }
 
         return $dto;
+
     }
 
 }
