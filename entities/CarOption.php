@@ -29,17 +29,6 @@ class CarOption
         $this->mileage = $mileage;
     }
 
-    public function fields(): array
-    {
-        return [
-            'brand' => fn() => $this->getBrand(),
-            'model' => fn() => $this->getModel(),
-            'year' => fn() => $this->getYear(),
-            'body' => fn() => $this->getBody(),
-            'mileage' => fn() => $this->getMileage(),
-        ];
-    }
-
     public function getBrand(): string
     {
         return $this->brand;
@@ -63,17 +52,6 @@ class CarOption
     public function getMileage(): int
     {
         return $this->mileage;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'brand' => $this->getBrand(),
-            'model' => $this->getModel(),
-            'year' => $this->getYear(),
-            'body' => $this->getBody(),
-            'mileage' => $this->getMileage(),
-        ];
     }
 
 }

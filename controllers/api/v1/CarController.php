@@ -6,6 +6,7 @@ use app\controllers\api\BaseApiController;
 use app\dto\request\CreateCarRequest;
 use app\dto\request\PaginationRequest;
 use app\helpers\ApiResponse;
+use app\mappers\CarDataMapper;
 use app\services\CarService;
 use Yii;
 use yii\filters\auth\HttpBearerAuth;
@@ -16,12 +17,15 @@ class CarController extends BaseApiController
 {
 
     private CarService $service;
+    private CarDataMapper $mapper;
 
-    public function __construct($id, $module, CarService $service, $config = [])
+    public function __construct($id, $module, CarService $service, CarDataMapper $mapper, $config = [])
     {
         $this->service = $service;
+        $this->mapper = $mapper;
         parent::__construct($id, $module, $config);
     }
+
 
     public function behaviors()
     {
@@ -56,7 +60,9 @@ class CarController extends BaseApiController
 
         Yii::$app->response->statusCode = 201;
 
-        return $this->success($car->toArray());
+        return $this->success(
+            $this->mapper->toResponse($car)
+        );
 
     }
 
@@ -70,32 +76,21 @@ class CarController extends BaseApiController
             // throw new NotFoundHttpException('Car not found');
         }
 
-        return $this->success($car->toArray());
+        return $this->success(
+            $this->mapper->toResponse($car)
+        );
 
     }
 
     public function actionList()
     {
-
         $paginationRequest = PaginationRequest::fromQuery();
 
         $provider = $this->service->getCars($paginationRequest);
 
-        $items = array_map(
-            fn($car) => $car->toArray(),
-            $provider->getModels()
+        return $this->success(
+            $this->mapper->toListResponse($provider)
         );
-
-        return ApiResponse::success([
-            'items' => $items,
-            'pagination' => [
-                'totalCount' => $provider->getTotalCount(),
-                'pageCount' => $provider->pagination->getPageCount(),
-                'currentPage' => $provider->getPagination()->getPage() + 1,
-                'perPage' => $provider->getPagination()->getPageSize(),
-            ]
-        ]);
-
     }
 
 }

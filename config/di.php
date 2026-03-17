@@ -6,6 +6,7 @@ use app\repositories\CarOptionRepositoryInterface;
 use app\repositories\CarRepository;
 use app\repositories\CarRepositoryInterface;
 use app\repositories\UserRepository;
+use app\repositories\UserRepositoryInterface;
 use app\services\AuthService;
 use app\services\CarService;
 
@@ -28,7 +29,10 @@ $container->setSingleton(
     CarOptionRepository::class
 );
 
-$container->setSingleton(UserRepository::class);
+$container->setSingleton(
+    UserRepositoryInterface::class,
+    UserRepository::class
+);
 
 $container->setSingleton(CarService::class);
 

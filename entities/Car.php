@@ -38,22 +38,6 @@ class Car
         $this->createdAt = $createdAt;
     }
 
-    public function fields(): array
-    {
-        return [
-            'id' => fn() => $this->getId(),
-            'title' => fn() => $this->getTitle(),
-            'description' => fn() => $this->getDescription(),
-            'price' => fn() => $this->getPrice(),
-            'photo_url' => fn() => $this->getPhotoUrl(),
-            'contacts' => fn() => $this->getContacts(),
-            'created_at' => fn() => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-            'options' => fn() => $this->getOption()
-                ? [$this->getOption()->toArray()]
-                : null,
-        ];
-    }
-
     public function addOption(CarOption $option): void
     {
         $this->option = $option;
@@ -107,22 +91,6 @@ class Car
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getTitle(),
-            'description' => $this->getDescription(),
-            'price' => $this->getPrice(),
-            'photo_url' => $this->getPhotoUrl(),
-            'contacts' => $this->getContacts(),
-            'created_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-            'options' => $this->getOption()
-                ? [$this->getOption()->toArray()]
-                : null,
-        ];
     }
 
 }
