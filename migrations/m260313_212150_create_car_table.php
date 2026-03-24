@@ -2,9 +2,6 @@
 
 use yii\db\Migration;
 
-/**
- * Миграция создания таблицы car.
- */
 class m260313_212150_create_car_table extends Migration
 {
 

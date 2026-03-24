@@ -9,6 +9,7 @@ use app\services\AuthService;
 
 class AuthController extends Controller
 {
+
     public $enableCsrfValidation = false;
 
     private AuthService $service;

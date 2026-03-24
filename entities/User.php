@@ -4,6 +4,7 @@ namespace app\entities;
 
 class User
 {
+
     private ?int $id = null;
 
     private string $login;

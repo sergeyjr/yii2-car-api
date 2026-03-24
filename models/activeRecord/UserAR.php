@@ -7,6 +7,7 @@ use yii\web\IdentityInterface;
 
 class UserAR extends ActiveRecord implements IdentityInterface
 {
+
     public static function tableName()
     {
         return 'api_user';
@@ -55,4 +56,5 @@ class UserAR extends ActiveRecord implements IdentityInterface
     {
         return $this->auth_token === $authKey;
     }
+
 }
