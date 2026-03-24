@@ -4,5 +4,7 @@ return [
     'adminEmail' => 'admin@example.com',
     'senderEmail' => 'noreply@example.com',
     'senderName' => 'Example.com mailer',
-    'authEnabled' => false,
+    'authEnabled' => true,
+    'authMode' => 'any', // none | apikey | token | any
+    'apiKey' => 'kpR85bh5hge%$',
 ];

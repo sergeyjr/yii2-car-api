@@ -8,10 +8,13 @@ use app\entities\Car;
 use app\entities\CarOption;
 use app\repositories\CarRepositoryInterface;
 use yii\data\ActiveDataProvider;
+use Yii;
 
 class CarService
 {
     private CarRepositoryInterface $repository;
+
+    private const CACHE_TTL = 600;
 
     public function __construct(CarRepositoryInterface $repository)
     {
@@ -29,8 +32,56 @@ class CarService
             new \DateTime()
         );
 
-        if ($request->options) {
-            $o = $request->options;
+        $this->attachOptions($car, $request->options);
+
+        $car = $this->repository->save($car);
+
+        Yii::$app->cache->delete("car:{$car->getId()}");
+
+        return $car;
+    }
+
+    public function getCar(int $id): ?Car
+    {
+        $cacheKey = "car:$id";
+
+        try {
+            return Yii::$app->cache->getOrSet(
+                $cacheKey,
+                fn() => $this->repository->findById($id),
+                self::CACHE_TTL
+            );
+        } catch (\Throwable $e) {
+            return $this->repository->findById($id);
+        }
+    }
+
+    public function getCars(PaginationRequest $pagination): ActiveDataProvider
+    {
+        $query = $this->repository->getQuery();
+
+        $this->applySort($query, $pagination->sort);
+
+        return new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'page' => $pagination->page - 1,
+                'pageSize' => $pagination->pageSize,
+            ],
+        ]);
+    }
+
+    private function attachOptions(Car $car, ?array $options): void
+    {
+        if (empty($options)) {
+            return;
+        }
+
+        foreach ($options as $o) {
+            if (!isset($o['brand'], $o['model'], $o['year'], $o['body'], $o['mileage'])) {
+                continue;
+            }
+
             $car->addOption(
                 new CarOption(
                     $o['brand'],
@@ -41,38 +92,18 @@ class CarService
                 )
             );
         }
-
-        return $this->repository->save($car);
     }
 
-    public function getCar(int $id): ?Car
+    private function applySort($query, ?string $sort): void
     {
-        return $this->repository->findById($id);
-    }
-
-    /**
-     * Получить список объявлений через ActiveDataProvider.
-     */
-    public function getCars(PaginationRequest $pagination): ActiveDataProvider
-    {
-        $query = $this->repository->getQuery();
-
-        // Настраиваем ActiveDataProvider
-        $provider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'page' => $pagination->page - 1, // ActiveDataProvider начинает с 0
-                'pageSize' => $pagination->pageSize,
-            ],
-        ]);
-
-        // Если передана сортировка
-        if ($pagination->sort) {
-            // Пример: 'price' или '-price' (для сортировки по убыванию)
-            $provider->sort->defaultOrder = [$pagination->sort => SORT_ASC];
+        if (!$sort) {
+            return;
         }
 
-        return $provider;
+        $direction = str_starts_with($sort, '-') ? SORT_DESC : SORT_ASC;
+        $field = ltrim($sort, '-');
+
+        $query->orderBy([$field => $direction]);
     }
 
 }

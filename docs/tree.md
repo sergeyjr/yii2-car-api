@@ -57,9 +57,3 @@ app/
 │
 ├── helpers/
 │   └── ApiResponse.php
-│
-└── web/
-├── index.php
-├── api-test.html
-└── js/
-└── api-tester.js

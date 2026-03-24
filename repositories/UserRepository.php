@@ -8,6 +8,7 @@ use app\models\activeRecord\UserAR;
 
 class UserRepository implements UserRepositoryInterface
 {
+
     private UserDataMapper $mapper;
 
     public function __construct(UserDataMapper $mapper)
@@ -61,4 +62,18 @@ class UserRepository implements UserRepositoryInterface
             throw new \RuntimeException('Failed to save token');
         }
     }
+
+    public function findByToken(string $token): ?User
+    {
+        $ar = UserAR::find()
+            ->where(['auth_token' => $token])
+            ->one();
+
+        if (!$ar) {
+            return null;
+        }
+
+        return $this->mapper->mapToEntity($ar);
+    }
+
 }

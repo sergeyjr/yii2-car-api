@@ -7,13 +7,11 @@ use app\models\activeRecord\UserAR;
 
 class UserDataMapper
 {
-
     public function mapToEntity(UserAR $ar): User
     {
-
         $user = new User(
             $ar->login,
-            $ar->password_hash
+            $ar->password // из БД
         );
 
         $user->setId($ar->id);
@@ -23,18 +21,14 @@ class UserDataMapper
         }
 
         return $user;
-
     }
 
     public function mapToActiveRecord(User $user, UserAR $ar): UserAR
     {
-
         $ar->login = $user->getLogin();
-        $ar->password_hash = $user->getPasswordHash();
+        $ar->password = $user->getPasswordHash();
         $ar->auth_token = $user->getAuthToken();
 
         return $ar;
-
     }
-
 }

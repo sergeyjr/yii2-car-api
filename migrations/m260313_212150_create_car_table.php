@@ -12,12 +12,13 @@ class m260313_212150_create_car_table extends Migration
     {
         $this->createTable('car', [
             'id' => $this->primaryKey(),
-            'title' => $this->string(),
-            'description' => $this->text(),
-            'price' => $this->decimal(12, 2), // до 9 999 999 999.99
-            'photo_url' => $this->string(),
-            'contacts' => $this->string(),
-            'created_at' => $this->timestamp(),
+            'title' => $this->string()->notNull(),
+            'description' => $this->text()->notNull(),
+            'price' => $this->decimal(12, 2)->notNull(),
+            'photo_url' => $this->string()->notNull(),
+            'contacts' => $this->string()->notNull(),
+            'created_at' => $this->timestamp()->null(),
+            'updated_at' => $this->timestamp()->null(),
         ]);
     }
 

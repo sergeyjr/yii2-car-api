@@ -3,6 +3,7 @@
 namespace app\controllers\api\v1;
 
 use Yii;
+use app\components\auth\FlexibleAuth;
 use app\controllers\api\BaseApiController;
 use app\dto\request\CreateCarRequest;
 use app\dto\request\PaginationRequest;
@@ -10,7 +11,6 @@ use app\helpers\ApiResponse;
 use app\mappers\CarDataMapper;
 use app\services\CarService;
 use yii\filters\ContentNegotiator;
-use yii\filters\auth\HttpBearerAuth;
 use yii\web\Response;
 
 class CarController extends BaseApiController
@@ -28,7 +28,6 @@ class CarController extends BaseApiController
 
     public function behaviors()
     {
-
         $behaviors = parent::behaviors();
 
         $behaviors['contentNegotiator'] = [
@@ -40,12 +39,11 @@ class CarController extends BaseApiController
 
         if (Yii::$app->params['authEnabled']) {
             $behaviors['authenticator'] = [
-                'class' => HttpBearerAuth::class,
+                'class' => FlexibleAuth::class,
             ];
         }
 
         return $behaviors;
-
     }
 
     public function actionCreate()

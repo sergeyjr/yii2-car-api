@@ -7,10 +7,9 @@ use yii\web\IdentityInterface;
 
 class UserAR extends ActiveRecord implements IdentityInterface
 {
-
     public static function tableName()
     {
-        return 'user';
+        return 'api_user';
     }
 
     public static function findIdentity($id)
@@ -38,7 +37,7 @@ class UserAR extends ActiveRecord implements IdentityInterface
     {
         return \Yii::$app->security->validatePassword(
             $password,
-            $this->password_hash
+            $this->password
         );
     }
 
@@ -56,5 +55,4 @@ class UserAR extends ActiveRecord implements IdentityInterface
     {
         return $this->auth_token === $authKey;
     }
-
 }

@@ -9,9 +9,8 @@ class m260313_212521_create_car_option_table extends Migration
     {
 
         $this->createTable('car_option', [
-
             'id' => $this->primaryKey(),
-            'car_id' => $this->integer()->notNull()->unique(),
+            'car_id' => $this->bigInteger()->notNull(),
 
             'brand' => $this->string(100)->notNull(),
             'model' => $this->string(100)->notNull(),
@@ -20,6 +19,14 @@ class m260313_212521_create_car_option_table extends Migration
             'mileage' => $this->integer()->notNull(),
         ]);
 
+        $this->createIndex(
+            'idx_car_option_car_id_unique',
+            'car_option',
+            'car_id',
+            true
+        );
+
+        // FK (cascadeOnDelete)
         $this->addForeignKey(
             'fk_car_option_car',
             'car_option',
@@ -29,7 +36,6 @@ class m260313_212521_create_car_option_table extends Migration
             'CASCADE'
         );
 
-        // CHECK ограничения
         $this->execute("
             ALTER TABLE car_option
             ADD CONSTRAINT chk_car_option_year CHECK (year >= 1885)
@@ -43,7 +49,13 @@ class m260313_212521_create_car_option_table extends Migration
 
     public function safeDown()
     {
+
+        $this->execute("ALTER TABLE car_option DROP CONSTRAINT IF EXISTS chk_car_option_year");
+        $this->execute("ALTER TABLE car_option DROP CONSTRAINT IF EXISTS chk_car_option_mileage");
+
         $this->dropForeignKey('fk_car_option_car', 'car_option');
+
+        $this->dropIndex('idx_car_option_car_id_unique', 'car_option');
 
         $this->dropTable('car_option');
     }

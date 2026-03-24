@@ -1,5 +1,9 @@
 <?php
 
+use yii\symfonymailer\Mailer;
+use yii\web\JsonResponseFormatter;
+use yii\web\Response;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -36,8 +40,8 @@ $config = [
 
         'response' => [
             'formatters' => [
-                \yii\web\Response::FORMAT_JSON => [
-                    'class' => \yii\web\JsonResponseFormatter::class,
+                Response::FORMAT_JSON => [
+                    'class' => JsonResponseFormatter::class,
                     'prettyPrint' => true,
                     'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
                 ],
@@ -71,7 +75,7 @@ $config = [
          * Mailer
          */
         'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
+            'class' => Mailer::class,
             'viewPath' => '@app/mail',
             'useFileTransport' => true,
         ],
@@ -102,11 +106,12 @@ $config = [
             'showScriptName' => false,
 
             'rules' => [
+                'POST api/v1/auth/login' => 'api/v1/auth/login',
+
                 'GET api/v1/car/list' => 'api/v1/car/list',
                 'GET api/v1/car/<id:\d+>' => 'api/v1/car/view',
                 'POST api/v1/car/create' => 'api/v1/car/create',
             ],
-
         ],
 
     ],
