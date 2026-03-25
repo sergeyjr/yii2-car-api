@@ -3,22 +3,22 @@
 namespace app\repositories;
 
 use app\entities\User;
-use app\mappers\UserDataMapper;
-use app\models\activeRecord\UserAR;
+use app\mappers\UserMapper;
+use app\models\activeRecord\ApiUserAR;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository
 {
 
-    private UserDataMapper $mapper;
+    private UserMapper $mapper;
 
-    public function __construct(UserDataMapper $mapper)
+    public function __construct(UserMapper $mapper)
     {
         $this->mapper = $mapper;
     }
 
     public function findByLogin(string $login): ?User
     {
-        $ar = UserAR::find()
+        $ar = ApiUserAR::find()
             ->where(['login' => $login])
             ->one();
 
@@ -32,8 +32,8 @@ class UserRepository implements UserRepositoryInterface
     public function save(User $user): void
     {
         $ar = $user->getId()
-            ? UserAR::findOne($user->getId())
-            : new UserAR();
+            ? ApiUserAR::findOne($user->getId())
+            : new ApiUserAR();
 
         $ar = $this->mapper->mapToActiveRecord($user, $ar);
 
@@ -50,7 +50,7 @@ class UserRepository implements UserRepositoryInterface
     {
         $user->setAuthToken($token);
 
-        $ar = UserAR::findOne($user->getId());
+        $ar = ApiUserAR::findOne($user->getId());
 
         if (!$ar) {
             throw new \RuntimeException('User not found');
@@ -65,7 +65,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function findByToken(string $token): ?User
     {
-        $ar = UserAR::find()
+        $ar = ApiUserAR::find()
             ->where(['auth_token' => $token])
             ->one();
 

@@ -8,7 +8,7 @@ use app\controllers\api\BaseApiController;
 use app\dto\request\CreateCarRequest;
 use app\dto\request\PaginationRequest;
 use app\helpers\ApiResponse;
-use app\mappers\CarDataMapper;
+use app\mappers\CarMapper;
 use app\services\CarService;
 use yii\filters\ContentNegotiator;
 use yii\web\Response;
@@ -17,9 +17,9 @@ class CarController extends BaseApiController
 {
 
     private CarService $service;
-    private CarDataMapper $mapper;
+    private CarMapper $mapper;
 
-    public function __construct($id, $module, CarService $service, CarDataMapper $mapper, $config = [])
+    public function __construct($id, $module, CarService $service, CarMapper $mapper, $config = [])
     {
         $this->service = $service;
         $this->mapper = $mapper;

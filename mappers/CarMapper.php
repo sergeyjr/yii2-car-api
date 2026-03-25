@@ -12,7 +12,7 @@ use app\models\activeRecord\CarAR;
  * DataMapper преобразует ActiveRecord модели в Entity и обратно.
  * Нужен чтобы бизнес-объекты не зависели от Yii ActiveRecord.
  */
-class CarDataMapper
+class CarMapper
 {
 
     public function mapToEntity(CarAR $ar): Car

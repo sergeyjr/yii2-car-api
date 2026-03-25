@@ -3,18 +3,18 @@
 namespace app\repositories;
 
 use app\entities\Car;
-use app\mappers\CarDataMapper;
+use app\mappers\CarMapper;
 use app\models\activeRecord\CarAR;
 use yii\db\ActiveQuery;
 
-class CarRepository implements CarRepositoryInterface
+class CarRepository
 {
 
-    private CarDataMapper $mapper;
+    private CarMapper $mapper;
     private CarOptionRepository $optionRepository;
 
     public function __construct(
-        CarDataMapper       $mapper,
+        CarMapper           $mapper,
         CarOptionRepository $optionRepository
     )
     {

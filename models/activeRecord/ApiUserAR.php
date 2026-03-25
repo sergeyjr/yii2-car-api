@@ -5,7 +5,7 @@ namespace app\models\activeRecord;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
-class UserAR extends ActiveRecord implements IdentityInterface
+class ApiUserAR extends ActiveRecord implements IdentityInterface
 {
 
     public static function tableName()
@@ -25,7 +25,7 @@ class UserAR extends ActiveRecord implements IdentityInterface
             ->one();
     }
 
-    public static function findByLogin(string $login): ?UserAR
+    public static function findByLogin(string $login): ?ApiUserAR
     {
         $user = self::find()
             ->where(['login' => $login])

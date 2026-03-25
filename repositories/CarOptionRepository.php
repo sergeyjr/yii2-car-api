@@ -9,7 +9,7 @@ use app\models\activeRecord\CarOptionAR;
  * Репозиторий для работы с техническими характеристиками автомобиля.
  * Отвечает за сохранение и получение опции из базы данных.
  */
-class CarOptionRepository implements CarOptionRepositoryInterface
+class CarOptionRepository
 {
 
     /**

@@ -1,12 +1,9 @@
 <?php
 
-use app\mappers\CarDataMapper;
+use app\mappers\CarMapper;
 use app\repositories\CarOptionRepository;
-use app\repositories\CarOptionRepositoryInterface;
 use app\repositories\CarRepository;
-use app\repositories\CarRepositoryInterface;
 use app\repositories\UserRepository;
-use app\repositories\UserRepositoryInterface;
 use app\services\AuthService;
 use app\services\CarService;
 
@@ -17,22 +14,13 @@ use app\services\CarService;
 
 $container = Yii::$container;
 
-$container->setSingleton(CarDataMapper::class);
+$container->setSingleton(CarMapper::class);
 
-$container->setSingleton(
-    CarRepositoryInterface::class,
-    CarRepository::class
-);
+$container->setSingleton(CarRepository::class);
 
-$container->setSingleton(
-    CarOptionRepositoryInterface::class,
-    CarOptionRepository::class
-);
+$container->setSingleton(CarOptionRepository::class);
 
-$container->setSingleton(
-    UserRepositoryInterface::class,
-    UserRepository::class
-);
+$container->setSingleton(UserRepository::class);
 
 $container->setSingleton(CarService::class);
 

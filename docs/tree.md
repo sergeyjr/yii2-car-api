@@ -26,8 +26,8 @@ app/
 │   └── User.php
 │
 ├── mappers/
-│   ├── CarDataMapper.php
-│   └── UserDataMapper.php
+│   ├── CarMapper.php
+│   └── UserMapper.php
 │
 ├── migrations/
 │   ├── m260313_212150_create_car_table.php
@@ -39,17 +39,14 @@ app/
 │   └── activeRecord/
 │       ├── CarAR.php
 │       ├── CarOptionAR.php
-│       └── UserAR.php
+│       └── ApiUserAR.php
 │
 ├── repositories/
 │   ├── CarRepository.php
-│   ├── CarRepositoryInterface.php
 │   │
 │   ├── CarOptionRepository.php
-│   ├── CarOptionRepositoryInterface.php
 │   │
-│   ├── UserRepository.php
-│   └── UserRepositoryInterface.php
+│   └── UserRepository.php
 │
 ├── services/
 │   ├── AuthService.php

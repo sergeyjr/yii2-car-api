@@ -3,12 +3,12 @@
 namespace app\mappers;
 
 use app\entities\User;
-use app\models\activeRecord\UserAR;
+use app\models\activeRecord\ApiUserAR;
 
-class UserDataMapper
+class UserMapper
 {
 
-    public function mapToEntity(UserAR $ar): User
+    public function mapToEntity(ApiUserAR $ar): User
     {
 
         $user = new User(
@@ -26,7 +26,7 @@ class UserDataMapper
 
     }
 
-    public function mapToActiveRecord(User $user, UserAR $ar): UserAR
+    public function mapToActiveRecord(User $user, ApiUserAR $ar): ApiUserAR
     {
 
         $ar->login = $user->getLogin();

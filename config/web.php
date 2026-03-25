@@ -59,7 +59,7 @@ $config = [
          * User component
          */
         'user' => [
-            'identityClass' => app\models\activeRecord\UserAR::class,
+            'identityClass' => app\models\activeRecord\ApiUserAR::class,
             'enableAutoLogin' => false,
             'enableSession' => false,
         ],
