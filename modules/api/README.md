@@ -1,5 +1,3 @@
-Вот версия с заменой `fusion-api` на `api`:
-
 ```md id="api-install-yii2-clean"
 # Установка API модуля (Yii2)
 
