@@ -4,17 +4,18 @@ use yii\symfonymailer\Mailer;
 use yii\web\JsonResponseFormatter;
 use yii\web\Response;
 
-$params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/db.php';
+$params = require_once __DIR__ . '/params.php';
+$db = require_once __DIR__ . '/db.php';
 
 /**
  * Подключение конфигурации Dependency Injection
  */
-require __DIR__ . '/di.php';
+require_once __DIR__ . '/di.php';
 
 $config = [
 
     'id' => 'basic',
+
     'basePath' => dirname(__DIR__),
 
     'bootstrap' => ['log'],
@@ -22,6 +23,12 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
+    ],
+
+    'modules' => [
+        'api' => [
+            'class' => app\modules\api\Module::class,
+        ],
     ],
 
     'components' => [
@@ -32,12 +39,14 @@ $config = [
         'request' => [
             'cookieValidationKey' => 'it-link',
 
-            // поддержка JSON API
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ],
         ],
 
+        /**
+         * Response
+         */
         'response' => [
             'formatters' => [
                 Response::FORMAT_JSON => [
@@ -59,7 +68,7 @@ $config = [
          * User component
          */
         'user' => [
-            'identityClass' => app\models\activeRecord\ApiUserAR::class,
+            'identityClass' => app\modules\api\v1\models\activeRecord\ApiUserAR::class,
             'enableAutoLogin' => false,
             'enableSession' => false,
         ],
@@ -106,11 +115,11 @@ $config = [
             'showScriptName' => false,
 
             'rules' => [
-                'POST api/v1/auth/login' => 'api/v1/auth/login',
+                'POST api/auth/login' => 'api/auth/login',
 
-                'GET api/v1/car/list' => 'api/v1/car/list',
-                'GET api/v1/car/<id:\d+>' => 'api/v1/car/view',
-                'POST api/v1/car/create' => 'api/v1/car/create',
+                'GET api/car/list' => 'api/car/list',
+                'GET api/car/<id:\d+>' => 'api/car/view',
+                'POST api/car/create' => 'api/car/create',
             ],
         ],
 
@@ -120,8 +129,6 @@ $config = [
 ];
 
 if (YII_ENV_DEV) {
-
-    // configuration adjustments for 'dev' environment
 
     $config['bootstrap'][] = 'debug';
 

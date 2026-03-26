@@ -1,15 +1,14 @@
 <?php
 
-use app\mappers\CarMapper;
-use app\repositories\CarOptionRepository;
-use app\repositories\CarRepository;
-use app\repositories\ApiUserRepository;
-use app\services\AuthService;
-use app\services\CarService;
+use app\modules\api\v1\mappers\CarMapper;
+use app\modules\api\v1\repositories\CarOptionRepository;
+use app\modules\api\v1\repositories\CarRepository;
+use app\modules\api\v1\repositories\ApiUserRepository;
+use app\modules\api\v1\services\AuthService;
+use app\modules\api\v1\services\CarService;
 
 /**
  * Регистрация зависимостей в DI контейнере Yii.
- * Здесь описывается какие реализации использовать для интерфейсов.
  */
 
 $container = Yii::$container;
