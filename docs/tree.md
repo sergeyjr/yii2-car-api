@@ -13,26 +13,28 @@ app/
 │
 ├── dto/
 │   ├── request/
-│   │   ├── CreateCarRequest.php
-│   │   └── PaginationRequest.php
+│   │   ├── CarCreateRequest.php
+│   │   ├── PaginationRequest.php
+│   │   └── CarOptionRequest.php
 │   │
 │   └── response/
 │       ├── CarListResponse.php
+│       ├── CarOptionResponse.php
 │       └── CarResponse.php
 │
 ├── entities/
 │   ├── Car.php
 │   ├── CarOption.php
-│   └── User.php
+│   └── ApiUser.php
 │
 ├── mappers/
 │   ├── CarMapper.php
-│   └── UserMapper.php
+│   └── ApiUserMapper.php
 │
 ├── migrations/
 │   ├── m260313_212150_create_car_table.php
 │   ├── m260313_212521_create_car_option_table.php
-│   ├── m260315_185048_create_user_table.php
+│   ├── m260315_185048_create_api_user_table.php
 │   └── m260316_120834_seed_car_data.php
 │
 ├── models/
@@ -46,7 +48,7 @@ app/
 │   │
 │   ├── CarOptionRepository.php
 │   │
-│   └── UserRepository.php
+│   └── ApiUserRepository.php
 │
 ├── services/
 │   ├── AuthService.php

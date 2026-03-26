@@ -2,7 +2,7 @@
 
 namespace app\entities;
 
-class User
+class ApiUser
 {
 
     private ?int $id = null;

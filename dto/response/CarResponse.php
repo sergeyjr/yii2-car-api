@@ -2,9 +2,6 @@
 
 namespace app\dto\response;
 
-/**
- * DTO ответа одного объявления.
- */
 class CarResponse
 {
 
@@ -15,6 +12,6 @@ class CarResponse
     public string $photo_url;
     public string $contacts;
 
-    public ?array $options = null;
+    public array $options = [];
 
 }

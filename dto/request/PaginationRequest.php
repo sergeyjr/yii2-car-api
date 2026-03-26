@@ -9,11 +9,16 @@ class PaginationRequest
     public int $pageSize = 5;
     public ?string $sort = null;
 
+    private const MAX_PAGE_SIZE = 100;
+
     public function __construct(array $data = [])
     {
-        $this->page = (int)($data['page'] ?? $this->page);
+        $this->page = max(1, (int)($data['page'] ?? $this->page));
+
         $this->pageSize = (int)($data['pageSize'] ?? $this->pageSize);
-        $this->sort = $data['sort'] ?? $this->sort;
+        $this->pageSize = max(1, min(self::MAX_PAGE_SIZE, $this->pageSize));
+
+        $this->sort = isset($data['sort']) ? (string)$data['sort'] : null;
     }
 
     public static function fromQuery(): self

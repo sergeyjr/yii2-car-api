@@ -3,9 +3,9 @@
 namespace app\controllers\api;
 
 use Yii;
+use app\helpers\ApiResponse;
 use yii\rest\Controller;
 use yii\web\Response;
-use app\helpers\ApiResponse;
 
 class BaseApiController extends Controller
 {

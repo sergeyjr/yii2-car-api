@@ -2,9 +2,6 @@
 
 namespace app\entities;
 
-/**
- * Entity технических характеристик автомобиля.
- */
 class CarOption
 {
 
@@ -17,11 +14,10 @@ class CarOption
     public function __construct(
         string $brand,
         string $model,
-        int    $year,
+        int $year,
         string $body,
-        int    $mileage
-    )
-    {
+        int $mileage
+    ) {
         $this->brand = $brand;
         $this->model = $model;
         $this->year = $year;
@@ -55,3 +51,4 @@ class CarOption
     }
 
 }
+

@@ -5,6 +5,6 @@ return [
     'senderEmail' => 'noreply@example.com',
     'senderName' => 'Example.com mailer',
     'authEnabled' => true,
-    'authMode' => 'any', // none | apikey | token | any
+    'authMode' => 'apikey', // none | apikey | token | any
     'apiKey' => 'kpR85bh5hge%$',
 ];

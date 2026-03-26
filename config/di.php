@@ -3,7 +3,7 @@
 use app\mappers\CarMapper;
 use app\repositories\CarOptionRepository;
 use app\repositories\CarRepository;
-use app\repositories\UserRepository;
+use app\repositories\ApiUserRepository;
 use app\services\AuthService;
 use app\services\CarService;
 
@@ -20,7 +20,7 @@ $container->setSingleton(CarRepository::class);
 
 $container->setSingleton(CarOptionRepository::class);
 
-$container->setSingleton(UserRepository::class);
+$container->setSingleton(ApiUserRepository::class);
 
 $container->setSingleton(CarService::class);
 

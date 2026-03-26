@@ -5,9 +5,8 @@ namespace app\controllers\api\v1;
 use Yii;
 use app\components\auth\FlexibleAuth;
 use app\controllers\api\BaseApiController;
-use app\dto\request\CreateCarRequest;
+use app\dto\request\CarCreateRequest;
 use app\dto\request\PaginationRequest;
-use app\helpers\ApiResponse;
 use app\mappers\CarMapper;
 use app\services\CarService;
 use yii\filters\ContentNegotiator;
@@ -28,6 +27,7 @@ class CarController extends BaseApiController
 
     public function behaviors()
     {
+
         $behaviors = parent::behaviors();
 
         $behaviors['contentNegotiator'] = [
@@ -44,15 +44,17 @@ class CarController extends BaseApiController
         }
 
         return $behaviors;
+
     }
 
     public function actionCreate()
     {
 
-        $request = CreateCarRequest::fromRequest();
+        $request = CarCreateRequest::fromRequest();
 
         if (!$request->validate()) {
-            return ApiResponse::error($request->errors, 422);
+            Yii::$app->response->statusCode = 422;
+            return $this->error($request->errors);
         }
 
         $car = $this->service->createCar($request);
@@ -71,8 +73,8 @@ class CarController extends BaseApiController
         $car = $this->service->getCar($id);
 
         if (!$car) {
-            return ApiResponse::error('Car not found', 404);
-            // throw new NotFoundHttpException('Car not found');
+            Yii::$app->response->statusCode = 404;
+            return $this->error('Car not found');
         }
 
         return $this->success(

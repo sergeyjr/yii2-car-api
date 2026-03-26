@@ -3,6 +3,7 @@
 namespace app\repositories;
 
 use app\entities\Car;
+use app\exceptions\RepositoryException;
 use app\mappers\CarMapper;
 use app\models\activeRecord\CarAR;
 use yii\db\ActiveQuery;
@@ -13,10 +14,7 @@ class CarRepository
     private CarMapper $mapper;
     private CarOptionRepository $optionRepository;
 
-    public function __construct(
-        CarMapper           $mapper,
-        CarOptionRepository $optionRepository
-    )
+    public function __construct(CarMapper $mapper, CarOptionRepository $optionRepository)
     {
         $this->mapper = $mapper;
         $this->optionRepository = $optionRepository;
@@ -29,11 +27,12 @@ class CarRepository
 
         try {
             $carAR = new CarAR();
+
             $this->mapper->mapToActiveRecord($car, $carAR);
             $carAR->created_at = $car->getCreatedAt()->format('Y-m-d H:i:s');
 
             if (!$carAR->save()) {
-                throw new \RuntimeException('Failed to save car');
+                throw new RepositoryException('Failed to save car');
             }
 
             if ($car->getOption()) {
@@ -42,7 +41,7 @@ class CarRepository
 
             $transaction->commit();
 
-            return $this->mapper->mapToEntity($carAR);
+            return $this->findById($carAR->id);
 
         } catch (\Throwable $e) {
             $transaction->rollBack();
@@ -67,9 +66,6 @@ class CarRepository
 
     }
 
-    /**
-     * Возвращает ActiveQuery для пагинации через ActiveDataProvider
-     */
     public function getQuery(): ActiveQuery
     {
         return CarAR::find()->with('option');

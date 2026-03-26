@@ -2,19 +2,16 @@
 
 namespace app\mappers;
 
-use app\entities\User;
+use app\entities\ApiUser;
 use app\models\activeRecord\ApiUserAR;
 
-class UserMapper
+class ApiUserMapper
 {
 
-    public function mapToEntity(ApiUserAR $ar): User
+    public function mapToEntity(ApiUserAR $ar): ApiUser
     {
 
-        $user = new User(
-            $ar->login,
-            $ar->password // из БД
-        );
+        $user = new ApiUser($ar->login, $ar->password);
 
         $user->setId($ar->id);
 
@@ -26,7 +23,7 @@ class UserMapper
 
     }
 
-    public function mapToActiveRecord(User $user, ApiUserAR $ar): ApiUserAR
+    public function mapToActiveRecord(ApiUser $user, ApiUserAR $ar): ApiUserAR
     {
 
         $ar->login = $user->getLogin();

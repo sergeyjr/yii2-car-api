@@ -3,9 +3,9 @@
 namespace app\controllers\api\v1;
 
 use Yii;
+use app\services\AuthService;
 use yii\web\Controller;
 use yii\web\Response;
-use app\services\AuthService;
 
 class AuthController extends Controller
 {

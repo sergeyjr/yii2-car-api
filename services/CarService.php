@@ -2,27 +2,29 @@
 
 namespace app\services;
 
-use app\dto\request\CreateCarRequest;
+use Yii;
+use app\dto\request\CarCreateRequest;
+use app\dto\request\CarOptionRequest;
 use app\dto\request\PaginationRequest;
 use app\entities\Car;
-use app\entities\CarOption;
-use app\repositories\CarRepositoryInterface;
+use app\repositories\CarRepository;
 use yii\data\ActiveDataProvider;
-use Yii;
 
 class CarService
 {
-    private CarRepositoryInterface $repository;
+
+    private CarRepository $repository;
 
     private const CACHE_TTL = 600;
 
-    public function __construct(CarRepositoryInterface $repository)
+    public function __construct(CarRepository $repository)
     {
         $this->repository = $repository;
     }
 
-    public function createCar(CreateCarRequest $request): Car
+    public function createCar(CarCreateRequest $request): Car
     {
+
         $car = new Car(
             $request->title,
             $request->description,
@@ -39,10 +41,12 @@ class CarService
         Yii::$app->cache->delete("car:{$car->getId()}");
 
         return $car;
+
     }
 
     public function getCar(int $id): ?Car
     {
+
         $cacheKey = "car:$id";
 
         try {
@@ -54,10 +58,12 @@ class CarService
         } catch (\Throwable $e) {
             return $this->repository->findById($id);
         }
+
     }
 
     public function getCars(PaginationRequest $pagination): ActiveDataProvider
     {
+
         $query = $this->repository->getQuery();
 
         $this->applySort($query, $pagination->sort);
@@ -69,33 +75,25 @@ class CarService
                 'pageSize' => $pagination->pageSize,
             ],
         ]);
+
     }
 
     private function attachOptions(Car $car, ?array $options): void
     {
+
         if (empty($options)) {
             return;
         }
 
-        foreach ($options as $o) {
-            if (!isset($o['brand'], $o['model'], $o['year'], $o['body'], $o['mileage'])) {
-                continue;
-            }
-
-            $car->addOption(
-                new CarOption(
-                    $o['brand'],
-                    $o['model'],
-                    $o['year'],
-                    $o['body'],
-                    $o['mileage']
-                )
-            );
+        foreach ($options as $optionDTO) {
+            $car->addOption($optionDTO->toEntity());
         }
+
     }
 
     private function applySort($query, ?string $sort): void
     {
+
         if (!$sort) {
             return;
         }
@@ -104,6 +102,7 @@ class CarService
         $field = ltrim($sort, '-');
 
         $query->orderBy([$field => $direction]);
+
     }
 
 }

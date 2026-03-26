@@ -2,10 +2,6 @@
 
 namespace app\entities;
 
-/**
- * Entity объявления автомобиля.
- * Хранит основные данные объявления и техническую характеристику автомобиля.
- */
 class Car
 {
 
@@ -14,7 +10,7 @@ class Car
     private string $title;
     private string $description;
     private float $price;
-    private string $photoUrl;
+    private string $photo_url;
     private string $contacts;
 
     private \DateTime $createdAt;
@@ -25,7 +21,7 @@ class Car
         string    $title,
         string    $description,
         float     $price,
-        string    $photoUrl,
+        string    $photo_url,
         string    $contacts,
         \DateTime $createdAt
     )
@@ -33,7 +29,7 @@ class Car
         $this->title = $title;
         $this->description = $description;
         $this->price = $price;
-        $this->photoUrl = $photoUrl;
+        $this->photo_url = $photo_url;
         $this->contacts = $contacts;
         $this->createdAt = $createdAt;
     }
@@ -80,7 +76,7 @@ class Car
 
     public function getPhotoUrl(): string
     {
-        return $this->photoUrl;
+        return $this->photo_url;
     }
 
     public function getContacts(): string

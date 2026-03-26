@@ -2,16 +2,13 @@
 
 namespace app\mappers;
 
-use app\dto\response\CarListResponse;
 use app\dto\response\CarResponse;
+use app\dto\response\CarListResponse;
+use app\dto\response\CarOptionResponse;
 use app\entities\Car;
 use app\entities\CarOption;
 use app\models\activeRecord\CarAR;
 
-/**
- * DataMapper преобразует ActiveRecord модели в Entity и обратно.
- * Нужен чтобы бизнес-объекты не зависели от Yii ActiveRecord.
- */
 class CarMapper
 {
 
@@ -31,13 +28,14 @@ class CarMapper
 
         if ($ar->option) {
             $option = $ar->option;
+
             $car->setOption(
                 new CarOption(
                     $option->brand,
                     $option->model,
-                    $option->year,
+                    (int)$option->year,
                     $option->body,
-                    $option->mileage
+                    (int)$option->mileage
                 )
             );
         }
@@ -73,13 +71,9 @@ class CarMapper
 
         $option = $car->getOption();
 
-        $dto->options = $option ? [[
-            'brand' => $option->getBrand(),
-            'model' => $option->getModel(),
-            'year' => $option->getYear(),
-            'body' => $option->getBody(),
-            'mileage' => $option->getMileage(),
-        ]] : null;
+        $dto->options = $option
+            ? [CarOptionResponse::fromEntity($option)]
+            : [];
 
         return $dto;
 

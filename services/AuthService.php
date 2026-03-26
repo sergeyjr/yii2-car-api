@@ -3,14 +3,16 @@
 namespace app\services;
 
 use Yii;
-use app\repositories\UserRepository;
-use app\entities\User;
+use app\entities\ApiUser;
+use app\exceptions\RepositoryException;
+use app\repositories\ApiUserRepository;
 
 class AuthService
 {
-    private UserRepository $users;
 
-    public function __construct(UserRepository $users)
+    private ApiUserRepository $users;
+
+    public function __construct(ApiUserRepository $users)
     {
         $this->users = $users;
     }
@@ -20,7 +22,7 @@ class AuthService
         $user = $this->users->findByLogin($login);
 
         if (!$user || !$user->validatePassword($password)) {
-            throw new \RuntimeException('Invalid login or password');
+            throw new RepositoryException('Invalid login or password');
         }
 
         $token = Yii::$app->security->generateRandomString(64);
@@ -30,8 +32,9 @@ class AuthService
         return $token;
     }
 
-    public function getUserByToken(string $token): ?User
+    public function getUserByToken(string $token): ?ApiUser
     {
         return $this->users->findByToken($token);
     }
+
 }

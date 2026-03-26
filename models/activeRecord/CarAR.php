@@ -4,13 +4,10 @@ namespace app\models\activeRecord;
 
 use yii\db\ActiveRecord;
 
-/**
- * ActiveRecord модель таблицы car.
- */
 class CarAR extends ActiveRecord
 {
 
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'car';
     }
