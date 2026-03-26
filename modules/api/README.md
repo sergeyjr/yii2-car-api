@@ -1,4 +1,4 @@
-```md id="api-install-yii2-clean"
+```md
 # Установка API модуля (Yii2)
 
 ## 1. Подготовка архива
